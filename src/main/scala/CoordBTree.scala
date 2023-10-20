@@ -1,3 +1,5 @@
+// Section: 3.4.7 Drawing trees
+
 object CoordBTree {
   case class BTree[T](value: T, left: Option[BTree[T]], right: Option[BTree[T]])
   case class Coord(value: Int, x: Double, y: Double)

@@ -1,3 +1,5 @@
+// Section: 3.4.8 Parsing
+
 object Parser {
   import scala.util.parsing.combinator._
 
@@ -43,15 +45,21 @@ object Parser {
 
     def write: Parser[Write] = "write" ~> expr ^^ (e => Write(e))
 
-    def expr: Parser[Expression] = term | (term ~ expressionOperator ~ term) ^^ {
-      case left ~ op ~ right => BinaryOp(left, op, right) // Cast to Expression
+    def rec(calculated: Expression, rest: List[Expression ~ String]): Expression =
+      rest match
+        case (left ~ op)::Nil => BinaryOp(left, op, calculated)
+        case (left ~ op)::tail => rec(BinaryOp(left, op, calculated), tail)
+        case Nil => calculated
+
+    def expr: Parser[Expression] = rep(term ~ expressionOperator) ~ term ^^ {
+      case (rest ~ right) => rec(right, rest)
     }
 
-    def term: Parser[Expression] =  fact | fact ~ termOperator ~ fact ^^ {
-      case left ~ op ~ right => BinaryOp(left, op, right) // Cast to Expression
+    def term: Parser[Expression] = rep(fact ~ expressionOperator) ~ fact ^^ {
+      case (rest ~ right) => rec(right, rest)
     }
 
-    def fact: Parser[Expression] = integer | ident
+    def fact: Parser[Expression] = integer | ident | "(" ~> expr <~ ")"
 
     def integer: Parser[Integer] = """\d+""".r ^^ (s => Integer(s.toInt))
 
@@ -78,7 +86,7 @@ object Parser {
           |program MyProgram;
           |  y := 5
           |  x := 5
-          |  if y >= x then
+          |  if y >= (x + 2) then
           |    write y
           |  else
           |    write x
