@@ -43,25 +43,27 @@ object Parser {
 
     def write: Parser[Write] = "write" ~> expr ^^ (e => Write(e))
 
-    def expr: Parser[Expression] = term ~ rep(("+" | "-" | "!=" | "==" | ">" | ">=" | "<" | "<=") ~ term) ^^ {
-      case t ~ rest => rest.foldLeft(t) {
-        case (left, op ~ right) => BinaryOp(left, op, right) // Cast to Expression
-      }
+    def expr: Parser[Expression] = term | (term ~ expressionOperator ~ term) ^^ {
+      case left ~ op ~ right => BinaryOp(left, op, right) // Cast to Expression
     }
 
-    def term: Parser[Expression] = fact ~ rep(("*" | "/" | "<=" | ">=" | "<" | ">") ~ fact) ^^ {
-      case f ~ rest => rest.foldLeft(f) {
-        case (left, op ~ right) => BinaryOp(left, op, right) // Cast to Expression
-      }
+    def term: Parser[Expression] =  fact | fact ~ termOperator ~ fact ^^ {
+      case left ~ op ~ right => BinaryOp(left, op, right) // Cast to Expression
     }
 
-    def fact: Parser[Expression] = integer | ident | "(" ~> expr <~ ")"
+    def fact: Parser[Expression] = integer | ident
 
     def integer: Parser[Integer] = """\d+""".r ^^ (s => Integer(s.toInt))
 
     def ident: Parser[Identifier] = """[a-zA-Z_]\w*""".r ^^ (id => Identifier(id))
 
-    def comp: Parser[Comparison] = expr ~ ("==" | "!=" | ">" | "<" | "<=" | ">=") ~ expr ^^ {
+    def comparisonOperator: Parser[String] = "==" | "!=" | "<=" | ">=" | ">" | "<"
+
+    def expressionOperator: Parser[String] = "+" | "-"
+
+    def termOperator: Parser[String] = "*" | "/"
+
+    def comp: Parser[Comparison] = expr ~ comparisonOperator ~ expr ^^ {
       case left ~ op ~ right => ComparisonOp(left, op, right)
     }
 
@@ -75,10 +77,11 @@ object Parser {
         """
           |program MyProgram;
           |  y := 5
-          |  if y >= 5 then
-          |    write x
+          |  x := 5
+          |  if y >= x then
+          |    write y
           |  else
-          |    write 0
+          |    write x
           |end
       """.stripMargin
 
