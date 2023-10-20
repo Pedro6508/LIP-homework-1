@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Trabalho LIP.iml" filepath="$PROJECT_DIR$/Trabalho LIP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TrabalhoLIP.iml" filepath="$PROJECT_DIR$/.idea/modules/TrabalhoLIP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TrabalhoLIP Core.iml" filepath="$PROJECT_DIR$/.idea/modules/TrabalhoLIP Core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TrabalhoLIP-build.iml" filepath="$PROJECT_DIR$/.idea/modules/TrabalhoLIP-build.iml" />
     </modules>
   </component>
 </project>
