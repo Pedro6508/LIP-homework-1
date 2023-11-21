@@ -19,5 +19,7 @@ lazy val TrabalhoLIPCore = project
   .in(file("core"))
   .settings(
     name := "TrabalhoLIP Core",
-    libraryDependencies += "org.scala-lang" %% "toolkit-test" % "0.1.7" % Test
+    libraryDependencies += "org.scala-lang" %% "toolkit-test" % "0.1.7" % Test,
+    libraryDependencies += "org.apache.kafka" % "kafka-clients" % "3.4.0",
+    libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.4.7",
   )
