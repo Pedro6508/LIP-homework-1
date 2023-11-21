@@ -1,9 +1,6 @@
 import cats.{Applicative, Eval, Group, Monad, Monoid}
 import cats.syntax.all.*
 
-import scala.annotation.tailrec
-import scala.compiletime.ops.string.Length
-
 object Main {
   trait Encode {
     def format(num: Int): String = {
@@ -11,9 +8,9 @@ object Main {
       this match
         case Branch(totalFreq, left, right) =>
           (s"$ident <total: ${totalFreq.toString.format("%.3f")}>"
-            + s"\n$ident ${left.format(num + 1)}"
-            + s"\n$ident ${right.format(num + 1)}")
-        case Letter(freq) => s"$ident <freq: ${freq.toString.format("%.3f")}>"
+            + s"\n| ${left.format(num + 1)}"
+            + s"\n| ${right.format(num + 1)}")
+        case Letter(freq) => s"$ident <freq: ${freq.toString.format(".3f")}>"
     }
 
     def solve(list: List[Double]): Encode = {
@@ -53,8 +50,9 @@ object Main {
 
   def main(array: Array[String]): Unit = {
     val end: Int = 100
-    val list = List[Double](20, 3, 4, 50, 5, 6).map(
-      i => 1f/i
+    val step = 5
+    val list = (1 to end by step).toList.map(_.toDouble).map(
+      i => math.log(i)
     )
     println(Letter(.5).solve(list).format(0))
   }
